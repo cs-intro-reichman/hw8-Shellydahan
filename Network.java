@@ -54,7 +54,7 @@ public class Network {
                 this.users[i] = new User(name); 
                 userCount++; 
                 return true;
-            }//ss
+            }
         }
         return false;
     }
@@ -64,33 +64,61 @@ public class Network {
      *  or if the "follows" addition failed for some reason, returns false. */
     public boolean addFollowee(String name1, String name2) {
         //// Replace the following statement with your code
-        if (getUser(name1) != null && getUser(name2) != null){
-           return getUser(name1).addFollowee(name2);
+        if (name1 == null || name2 == null || name1.equalsIgnoreCase(name2)) {
+            return false; 
         }
-        return false;
+    
+        User u1 = null;
+        User u2 = null;
+        for (int i = 0; i < userCount; i++){
+            if (this.users[i] != null) {
+                if (this.users[i].getName().equalsIgnoreCase(name1)) {
+                    u1 = this.users[i];
+                }
+                if (this.users[i].getName().equalsIgnoreCase(name2)) {
+                    u2 = this.users[i];
+                }
+            }
+         
+            if (u1 != null && u2 != null) {
+                break;
+            }
+        }
+    
+        if (u1 == null || u2 == null){
+            return false;
+        }
+    
+        return u1.addFollowee(name2);
     }
     
     /** For the user with the given name, recommends another user to follow. The recommended user is
      *  the user that has the maximal mutual number of followees as the user with the given name. */
     public String recommendWhoToFollow(String name) {
         //// Replace the following statement with your code
-        int index = -1;
-        int max = 0;
-        User mostRecommendedUserToFollow = null;
-        for (int i = 0; i < users.length; i++){
-            if (users[i].getName().equals(name)){
-              continue;
+        User u = getUser(name);
+        if (u == null){
+            return null; 
+        }
+        User mostRecommended = null;
+        int maxMutual = 0;
+        for (int i = 0; i < userCount; i++){
+            User rec = this.users[i];
+            if (rec == null || rec == u || u.follows(rec.getName())) {
+                continue;
             }
-            if(users[i].countMutual(getUser(name)) > max){
-              max = users[i].countMutual(getUser(name));
-              index = i;
+            int mutualCount = rec.countMutual(u);
+            if (mutualCount > maxMutual){
+                maxMutual = mutualCount;
+                mostRecommended = rec;
             }
         }
-        if (index != -1){
-            mostRecommendedUserToFollow = users[index];
-            return mostRecommendedUserToFollow.getName();
-        }
-        return null;
+        if (mostRecommended != null){
+            return mostRecommended.getName();
+        } 
+        else {
+            return null;
+        }  
     }
 
     /** Computes and returns the name of the most popular user in this network: 
