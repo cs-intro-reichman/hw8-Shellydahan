@@ -31,7 +31,7 @@ public class Network {
     public User getUser(String name) {
         //// Replace the following statement with your code
         for (int i = 0; i < userCount; i++){
-            if (users[i].getName().equals(name)){
+            if (this.users[i]!=null && this.users[i].getName().equalsIgnoreCase(name)){
                 return users[i];
             }
         }
@@ -44,18 +44,19 @@ public class Network {
     *  Otherwise, creates a new user with the given name, adds the user to this network, and returns true. */
     public boolean addUser(String name) {
         //// Replace the following statement with your code
-        if (userCount == users.length) {
-            return false;
+        for (int i = 0; i < userCount; i++) {
+            if (this.users[i] != null && this.users[i].getName().equalsIgnoreCase(name)) {
+                return false; 
+            }
         }
-        else{
-              if (getUser(name) != null) {
-                 return false;
-                }
-            
-            users[userCount] = new User(name);
-            userCount++;
-            return true;
+        for (int i = 0; i < this.users.length; i++) {
+            if (this.users[i] == null) {
+                this.users[i] = new User(name); 
+                userCount++; 
+                return true;
+            }
         }
+        return false;
     }
 
     /** Makes the user with name1 follow the user with name2. If successful, returns true.
