@@ -125,20 +125,25 @@ public class Network {
      *  The user who appears the most in the follow lists of all the users. */
     public String mostPopularUser() {
         //// Replace the following statement with your code
+        if (userCount == 0) {
+            return null; 
+        }
+        
         String pop = null;
         int max = 0;
-        int index = -1;
-        for (int i = 0; i < users.length; i++){
-            if (followeeCount(users[i].getName()) > max){
-                max = followeeCount(users[i].getName());
-                index = i;
+    
+        for (int i = 0; i < userCount; i++) {
+            String currentUserName = this.users[i].getName();
+            int currentFollowCount = followeeCount(currentUserName);
+    
+            if (currentFollowCount > max) {
+                max = currentFollowCount;
+                pop = currentUserName;
             }
         }
-        if (index != -1){
-            pop = users[index].getName();
-            return pop;
-        }
-        return null;
+    
+        return pop;
+    
     }
 
     /** Returns the number of times that the given name appears in the follows lists of all
@@ -146,12 +151,17 @@ public class Network {
     private int followeeCount(String name) {
         //// Replace the following statement with your code
         int appear = 0; 
-        for (int i = 0; i < users.length; i++){
-            if (users[i].getName().equals(name)){
-                continue;
-              }
-            if (users[i].follows(name)){
-                appear++;
+        for (int i = 0; i < userCount; i++){
+            if (this.users[i] != null){
+                String[] follows = this.users[i].getfFollows();
+                if (follows != null) {
+                    for (int j = 0; j < follows.length; j++){
+                        if (follows[j] != null && follows[j].equalsIgnoreCase(name)){
+                            appear++;
+                            break; 
+                        }
+                    }
+                }
             }
         }
         return appear;
@@ -160,9 +170,9 @@ public class Network {
     // Returns a textual description of all the users in this network, and who they follow.
     public String toString() {
        //// Replace the following statement with your code
-       String ans = "Network: \n";
+       String ans = "Network:";
        for (int i = 0; i < userCount; i++) {
-           ans = ans + users[i].toString() + "\n";
+           ans = ans +  "\n" + users[i].toString();
        }
        return ans;
     }
