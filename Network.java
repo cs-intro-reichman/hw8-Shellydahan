@@ -54,7 +54,7 @@ public class Network {
                 this.users[i] = new User(name); 
                 userCount++; 
                 return true;
-            }
+            }//ss
         }
         return false;
     }
