@@ -77,21 +77,24 @@
      *  If the name is not in the list, does nothing and returns false. */
     public boolean removeFollowee(String name) {
         //// Replace the following statement with your code
-        int index = -1;
-        for (int i = 0; i < getfFollows().length; i++){
-            if (getfFollows()[i].equals(name)){
-                getfFollows()[i] = null;
-                index = i;
+        int n = -1;
+        for(int i = 0; i < follows.length; i++){
+            if (follows[i] != null && follows[i].equalsIgnoreCase(name) == true){
+                n = i;
+                break;
             }
         }
-        if (index == -1){
+        if (n == -1){
             return false;
         }
-        for (int i = index; i < getfFollows().length - 1; i++){
-            getfFollows()[i] = getfFollows()[i + 1];
+        if (n == follows.length -1){
+            follows[n] = null;
         }
-        getfFollows()[getfCount()] = null;
-        this.fCount = getfCount() - 1;
+        for (int i =n ; i < follows.length-1; i++){
+            follows[i] = follows[i+1];
+        }
+        follows[follows.length-1] = null;
+        fCount--;
         return true;
     }
 
@@ -100,11 +103,14 @@
     public int countMutual(User other) {
          //// Replace the following statement with your code
          int count = 0;
-         for (int i = 0; i < other.getfCount(); i++){
-            if (this.follows (other.getfFollows()[i])){
-                count++;
+        for (int i = 0; i < follows.length; i++){
+            for (int j =0; j<other.follows.length;j++){
+                if (follows[i]!= null && follows[i].equalsIgnoreCase(other.follows[j]) == true){
+                    count++;
+                    break;
+                }
             }
-         }
+        }
         return count;
     }
 
