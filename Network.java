@@ -15,7 +15,7 @@ public class Network {
     /** Creates a network  with some users. The only purpose of this constructor is 
      *  to allow testing the toString and getUser methods, before implementing other methods. */
     public Network(int maxUserCount, boolean gettingStarted) {
-        this(maxUserCount);
+        this(maxUserCount);//gg
         users[0] = new User("Foo");
         users[1] = new User("Bar");
         users[2] = new User("Baz");
@@ -30,6 +30,11 @@ public class Network {
      *  Notice that the method receives a String, and returns a User object. */
     public User getUser(String name) {
         //// Replace the following statement with your code
+        for (int i = 0; i < userCount; i++){
+            if (users[i].getName().equals(name)){
+                return users[i];
+            }
+        }
         return null;
     }
 
@@ -39,7 +44,18 @@ public class Network {
     *  Otherwise, creates a new user with the given name, adds the user to this network, and returns true. */
     public boolean addUser(String name) {
         //// Replace the following statement with your code
-        return false;
+        if (userCount == users.length) {
+            return false;
+        }
+        else{
+              if (getUser(name) != null) {
+                 return false;
+                }
+            
+            users[userCount] = new User(name);
+            userCount++;
+            return true;
+        }
     }
 
     /** Makes the user with name1 follow the user with name2. If successful, returns true.
@@ -47,6 +63,9 @@ public class Network {
      *  or if the "follows" addition failed for some reason, returns false. */
     public boolean addFollowee(String name1, String name2) {
         //// Replace the following statement with your code
+        if (getUser(name1) != null && getUser(name2) != null){
+           return getUser(name1).addFollowee(name2);
+        }
         return false;
     }
     
@@ -54,6 +73,22 @@ public class Network {
      *  the user that has the maximal mutual number of followees as the user with the given name. */
     public String recommendWhoToFollow(String name) {
         //// Replace the following statement with your code
+        int index = -1;
+        int max = 0;
+        User mostRecommendedUserToFollow = null;
+        for (int i = 0; i < users.length; i++){
+            if (users[i].getName().equals(name)){
+              continue;
+            }
+            if(users[i].countMutual(getUser(name)) > max){
+              max = users[i].countMutual(getUser(name));
+              index = i;
+            }
+        }
+        if (index != -1){
+            mostRecommendedUserToFollow = users[index];
+            return mostRecommendedUserToFollow.getName();
+        }
         return null;
     }
 
@@ -61,6 +96,19 @@ public class Network {
      *  The user who appears the most in the follow lists of all the users. */
     public String mostPopularUser() {
         //// Replace the following statement with your code
+        String pop = null;
+        int max = 0;
+        int index = -1;
+        for (int i = 0; i < users.length; i++){
+            if (followeeCount(users[i].getName()) > max){
+                max = followeeCount(users[i].getName());
+                index = i;
+            }
+        }
+        if (index != -1){
+            pop = users[index].getName();
+            return pop;
+        }
         return null;
     }
 
@@ -68,12 +116,26 @@ public class Network {
      *  the users in this network. Note: A name can appear 0 or 1 times in each list. */
     private int followeeCount(String name) {
         //// Replace the following statement with your code
-        return 0;
+        int appear = 0; 
+        for (int i = 0; i < users.length; i++){
+            if (users[i].getName().equals(name)){
+                continue;
+              }
+            if (users[i].follows(name)){
+                appear++;
+            }
+        }
+        return appear;
     }
 
     // Returns a textual description of all the users in this network, and who they follow.
     public String toString() {
        //// Replace the following statement with your code
-       return null;
+       String ans = "Network: \n";
+       for (int i = 0; i < userCount; i++) {
+           ans = ans + users[i].toString() + "\n";
+       }
+       return ans;
     }
 }
+
